@@ -125,27 +125,22 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Движение влево-вправо
         keyboardInput = Input.GetAxisRaw("Horizontal");
         float moveInput = keyboardInput != 0 ? keyboardInput : mobileInput;
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
-        // Поворот спрайта
         if (moveInput > 0 && !facingRight)
             Flip();
         else if (moveInput < 0 && facingRight)
             Flip();
 
-        // Проверка земли (лучем или кругом)
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
 
-        // Прыжок по нажатию Пробела
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             Jump();
         }
 
-        // Передача параметров ходьбы в аниматор
         anim.SetBool("isWalking", moveInput != 0);
     }
 
@@ -165,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            isGrounded = false; // Принудительно гасим флаг, чтобы повторный клик в том же прыжке не сработал
+            isGrounded = false;
         }
     }
 

@@ -1,0 +1,12 @@
+# ninja log v5
+316	2327	8160822574715942	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	a73263e4722c53ba
+2608	4154	8160822593902779	C:/platformer2d/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/38426p3v/obj/arm64-v8a/libswappywrapper.so	df94f30b146adc4a
+89	25605	8160822808347716	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	c9ae1ffb5875ca3b
+174	25610	8160822808690507	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	f8a5024cd6678598
+39	25612	8160822808468649	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	3f6a3b087af9688c
+62	26222	8160822808347716	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	8d11d70b32a67b7e
+17	26225	8160822809390286	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	3303b4cac3e1d321
+77	26226	8160822813500603	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	2fcb3ce26afc360f
+1	26228	8160822813500603	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	6cb0143f9493ec94
+299	27603	8160822828796476	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	9afe05c0da5d1727
+27604	28686	8160822839487059	C:/platformer2d/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/38426p3v/obj/arm64-v8a/libgame.so	13a0d234c5049212
