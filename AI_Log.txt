@@ -1,0 +1,10 @@
+AI ASSISTANCE LOG (Assignment 8-9: Mobile Game Kickoff)
+
+Project: 2D Mobile Action Platformer
+
+Summary of AI Usage (Gemini):
+
+1. Scripting & Debugging:
+   - Helped to write a code for enemies and helped a lot with resolving problems (so it's a lot of code now)
+   - Helped with understanding how to make game mechanics for example like how to make player walk through enemies but still contact with them, also helped to make gameplay smooth by assisting with right work with colliders and 2d physics materials.
+

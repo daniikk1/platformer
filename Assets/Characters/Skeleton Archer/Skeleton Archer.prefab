@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1974062248984761244}
   - component: {fileID: 5800182739925894135}
   - component: {fileID: 1499641966937263962}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Skeleton Archer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,14 +203,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16e072a74a123a8428447a1fe1c0e964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkeletonArcher
-  moveSpeed: 1.5
-  currentHealth: 3
+  data: {fileID: 0}
   player: {fileID: 0}
-  visionRange: 6
-  attackRange: 4.5
-  attackCooldown: 2
-  windUpTime: 0.5
-  arrowPrefab: {fileID: 0}
+  arrowPrefab: {fileID: 4804372871163656952, guid: 6e60fa8bfb6a5f34c973684ad1be23b0, type: 3}
   shootPoint: {fileID: 0}
   obstacleLayer:
     serializedVersion: 2

@@ -3,10 +3,9 @@ using UnityEngine;
 
 public class SkeletonArcher : MonoBehaviour
 {
-    public float moveSpeed = 1.5f;
+    public EnemyData data;
+    private int currentHealth;
     private int direction = -1;
-
-    public int currentHealth = 3;
     private bool isDead = false;
 
     private Rigidbody2D rb;
@@ -14,10 +13,6 @@ public class SkeletonArcher : MonoBehaviour
     private bool facingRight = false;
 
     public Transform player;
-    public float visionRange = 6f;
-    public float attackRange = 4.5f;
-    public float attackCooldown = 2f;
-    public float windUpTime = 0.5f;
     private float nextAttackTime = 0f;
     private bool isAttacking = false;
 
@@ -32,6 +27,8 @@ public class SkeletonArcher : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
+        if (data != null) currentHealth = data.maxHealth;
+
         if (player == null)
         {
             GameObject pObj = GameObject.FindGameObjectWithTag("Player");
@@ -44,7 +41,7 @@ public class SkeletonArcher : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return;
+        if (isDead || data == null) return;
 
         float horizontalDist = player != null ? Mathf.Abs(transform.position.x - player.position.x) : 999f;
 
@@ -54,7 +51,7 @@ public class SkeletonArcher : MonoBehaviour
             return;
         }
 
-        if (horizontalDist <= attackRange && CanSeePlayer())
+        if (horizontalDist <= data.attackRange && CanSeePlayer())
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             if (anim != null) anim.SetBool("isWalking", false);
@@ -72,21 +69,21 @@ public class SkeletonArcher : MonoBehaviour
             return;
         }
 
-        rb.linearVelocity = new Vector2(moveSpeed * direction, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(data.moveSpeed * direction, rb.linearVelocity.y);
         if (anim != null) anim.SetBool("isWalking", Mathf.Abs(rb.linearVelocity.x) > 0.1f);
     }
 
     bool CanSeePlayer()
     {
-        if (player == null) return false;
+        if (player == null || data == null) return false;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer > visionRange) return false;
+        if (distanceToPlayer > data.visionRange) return false;
 
         Vector2 startPos = eyesTransform != null ? (Vector2)eyesTransform.position : (Vector2)transform.position;
         Vector2 directionToPlayer = ((Vector2)player.position - startPos).normalized;
 
-        RaycastHit2D hit = Physics2D.Raycast(startPos, directionToPlayer, visionRange, obstacleLayer);
+        RaycastHit2D hit = Physics2D.Raycast(startPos, directionToPlayer, data.visionRange, obstacleLayer);
 
         if (hit.collider != null)
         {
@@ -102,7 +99,7 @@ public class SkeletonArcher : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         if (anim != null) anim.SetBool("isWalking", false);
 
-        yield return new WaitForSeconds(windUpTime);
+        yield return new WaitForSeconds(data.windUpTime);
 
         if (isDead) yield break;
 
@@ -110,9 +107,9 @@ public class SkeletonArcher : MonoBehaviour
 
         ShootTwoArrows();
 
-        yield return new WaitForSeconds(attackCooldown - windUpTime);
+        yield return new WaitForSeconds(data.attackCooldown - data.windUpTime);
         isAttacking = false;
-        nextAttackTime = Time.time + attackCooldown;
+        nextAttackTime = Time.time + data.attackCooldown;
     }
 
     void ShootTwoArrows()
@@ -189,6 +186,12 @@ public class SkeletonArcher : MonoBehaviour
         isDead = true;
         StopAllCoroutines();
 
+        LevelManager manager = Object.FindAnyObjectByType<LevelManager>();
+        if (manager != null)
+        {
+            manager.EnemyDied();
+        }
+
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;
         Collider2D col = GetComponent<Collider2D>();
@@ -206,10 +209,11 @@ public class SkeletonArcher : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        if (data == null) return;
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, visionRange);
+        Gizmos.DrawWireSphere(transform.position, data.visionRange);
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, data.attackRange);
     }
 }

@@ -3,12 +3,9 @@ using UnityEngine;
 
 public class Lancer : MonoBehaviour
 {
-    public float patrolSpeed = 1f;
-    public float chargeSpeed = 6f;
+    public EnemyData data;
+    private int currentHealth;
     private int direction = -1;
-
-    public int currentHealth = 4;
-    public int contactDamage = 2;
     private bool isDead = false;
 
     private Rigidbody2D rb;
@@ -16,11 +13,9 @@ public class Lancer : MonoBehaviour
     private bool facingRight = false;
 
     public Transform player;
-    public float visionRange = 7f;
     public Transform eyesTransform;
     public LayerMask obstacleLayer;
 
-    public float windUpTime = 0.5f;
     private bool isCharging = false;
     private bool isPreparingCharge = false;
 
@@ -28,6 +23,8 @@ public class Lancer : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
+        if (data != null) currentHealth = data.maxHealth;
 
         if (player == null)
         {
@@ -41,12 +38,11 @@ public class Lancer : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return;
+        if (isDead || data == null) return;
 
         if (isCharging)
         {
-            rb.linearVelocity = new Vector2(chargeSpeed * direction, rb.linearVelocity.y);
-
+            rb.linearVelocity = new Vector2(data.chargeSpeed * direction, rb.linearVelocity.y);
             CheckPlayerHitDuringCharge();
             return;
         }
@@ -69,13 +65,13 @@ public class Lancer : MonoBehaviour
             return;
         }
 
-        rb.linearVelocity = new Vector2(patrolSpeed * direction, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(data.moveSpeed * direction, rb.linearVelocity.y);
         if (anim != null) anim.SetBool("isWalking", Mathf.Abs(rb.linearVelocity.x) > 0.1f);
     }
 
     void CheckPlayerHitDuringCharge()
     {
-        if (player == null) return;
+        if (player == null || data == null) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
         if (distance <= 1.2f)
@@ -83,7 +79,7 @@ public class Lancer : MonoBehaviour
             PlayerMovement playerMov = player.GetComponent<PlayerMovement>();
             if (playerMov != null)
             {
-                playerMov.TakeDamage(contactDamage);
+                playerMov.TakeDamage(data.contactDamage);
 
                 isCharging = false;
                 FlipDirection();
@@ -93,15 +89,15 @@ public class Lancer : MonoBehaviour
 
     bool CanSeePlayer()
     {
-        if (player == null) return false;
+        if (player == null || data == null) return false;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer > visionRange) return false;
+        if (distanceToPlayer > data.visionRange) return false;
 
         Vector2 startPos = eyesTransform != null ? (Vector2)eyesTransform.position : (Vector2)transform.position;
         Vector2 directionToPlayer = ((Vector2)player.position - startPos).normalized;
 
-        RaycastHit2D hit = Physics2D.Raycast(startPos, directionToPlayer, visionRange, obstacleLayer);
+        RaycastHit2D hit = Physics2D.Raycast(startPos, directionToPlayer, data.visionRange, obstacleLayer);
 
         if (hit.collider != null)
         {
@@ -119,7 +115,7 @@ public class Lancer : MonoBehaviour
 
         if (anim != null) anim.SetTrigger("PrepareCharge");
 
-        yield return new WaitForSeconds(windUpTime);
+        yield return new WaitForSeconds(data.windUpTime);
 
         if (isDead) yield break;
 
@@ -140,11 +136,6 @@ public class Lancer : MonoBehaviour
             }
             FlipDirection();
         }
-
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            ApplyDamageToPlayer(collision.gameObject);
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -158,20 +149,6 @@ public class Lancer : MonoBehaviour
                 isCharging = false;
             }
             FlipDirection();
-        }
-    }
-
-    void ApplyDamageToPlayer(GameObject playerObj)
-    {
-        PlayerMovement playerMov = playerObj.GetComponent<PlayerMovement>();
-        if (playerMov == null)
-        {
-            playerMov = playerObj.GetComponentInParent<PlayerMovement>();
-        }
-
-        if (playerMov != null)
-        {
-            playerMov.TakeDamage(contactDamage);
         }
     }
 
@@ -215,6 +192,12 @@ public class Lancer : MonoBehaviour
         isDead = true;
         StopAllCoroutines();
 
+        LevelManager manager = Object.FindAnyObjectByType<LevelManager>();
+        if (manager != null)
+        {
+            manager.EnemyDied();
+        }
+
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;
         Collider2D col = GetComponent<Collider2D>();
@@ -232,7 +215,8 @@ public class Lancer : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        if (data == null) return;
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, visionRange);
+        Gizmos.DrawWireSphere(transform.position, data.visionRange);
     }
 }
