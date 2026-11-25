@@ -125,6 +125,8 @@ public class SimpleEnemy : MonoBehaviour
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         if (anim != null) anim.SetBool("isWalking", false);
 
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyWindUpClip);
+
         yield return new WaitForSeconds(data.windUpTime);
 
         if (isDead) yield break;
@@ -184,6 +186,7 @@ public class SimpleEnemy : MonoBehaviour
     void Die()
     {
         isDead = true;
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyDeathClip);
         StopAllCoroutines();
 
         LevelManager manager = Object.FindAnyObjectByType<LevelManager>();
@@ -219,6 +222,7 @@ public class SimpleEnemy : MonoBehaviour
                 playerMovement.TakeDamage(data.contactDamage);
             }
         }
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyHitClip);
     }
 
     private void OnDrawGizmosSelected()

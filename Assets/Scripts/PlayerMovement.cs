@@ -53,9 +53,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (currentHealth > 0)
         {
+
             if (anim != null) anim.SetTrigger("Hurt");
 
             StartCoroutine(InvulnerabilityRoutine());
+            AudioManager.Instance?.PlaySFX(AudioManager.Instance.playerHurtClip);
         }
         else
         {
@@ -103,6 +105,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.playerDeathClip, false);
 
         if (rb != null)
         {
@@ -161,6 +164,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
+            AudioManager.Instance?.PlaySFX(AudioManager.Instance.jumpClip);
         }
     }
 
@@ -175,6 +179,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Attack()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.shootClip);
         anim.SetTrigger("Attack");
         StartCoroutine(ShootWithDelay(0.6f));
     }

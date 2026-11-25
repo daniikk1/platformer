@@ -79,6 +79,7 @@ public class Lancer : MonoBehaviour
             PlayerMovement playerMov = player.GetComponent<PlayerMovement>();
             if (playerMov != null)
             {
+                AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyHitClip);
                 playerMov.TakeDamage(data.contactDamage);
 
                 isCharging = false;
@@ -114,6 +115,8 @@ public class Lancer : MonoBehaviour
         if (anim != null) anim.SetBool("isWalking", false);
 
         if (anim != null) anim.SetTrigger("PrepareCharge");
+
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyWindUpClip);
 
         yield return new WaitForSeconds(data.windUpTime);
 
@@ -190,6 +193,7 @@ public class Lancer : MonoBehaviour
     void Die()
     {
         isDead = true;
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyDeathClip);
         StopAllCoroutines();
 
         LevelManager manager = Object.FindAnyObjectByType<LevelManager>();

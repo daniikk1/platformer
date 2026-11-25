@@ -99,6 +99,8 @@ public class SkeletonArcher : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         if (anim != null) anim.SetBool("isWalking", false);
 
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyWindUpClip);
+
         yield return new WaitForSeconds(data.windUpTime);
 
         if (isDead) yield break;
@@ -117,6 +119,7 @@ public class SkeletonArcher : MonoBehaviour
         if (arrowPrefab == null || shootPoint == null) return;
 
         float shootDir = facingRight ? 1f : -1f;
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyShootClip);
 
         Vector3 pos1 = shootPoint.position;
         GameObject arrow1 = Instantiate(arrowPrefab, pos1, shootPoint.rotation);
@@ -184,6 +187,7 @@ public class SkeletonArcher : MonoBehaviour
     void Die()
     {
         isDead = true;
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.enemyDeathClip);
         StopAllCoroutines();
 
         LevelManager manager = Object.FindAnyObjectByType<LevelManager>();

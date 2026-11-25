@@ -4,6 +4,11 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+
+    [Header("Audio Settings UI")]
+    public Slider musicSlider;
+    public Slider sfxSlider;
+
     public GameObject levelSelectPanel;
 
     public Button level2Button;
@@ -20,11 +25,27 @@ public class MainMenu : MonoBehaviour
             levelSelectPanel.SetActive(false);
         }
 
+        if (SaveManager.Instance != null && SaveManager.Instance.saveData != null)
+        {
+            if (musicSlider != null)
+            {
+                musicSlider.SetValueWithoutNotify(SaveManager.Instance.saveData.musicVolume);
+                musicSlider.onValueChanged.AddListener(val => AudioManager.Instance?.SetMusicVolume(val));
+            }
+
+            if (sfxSlider != null)
+            {
+                sfxSlider.SetValueWithoutNotify(SaveManager.Instance.saveData.sfxVolume);
+                sfxSlider.onValueChanged.AddListener(val => AudioManager.Instance?.SetSFXVolume(val));
+            }
+        }
+
         UpdateLevelButtons();
     }
 
     public void PlayGame()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiPlayClip, false);
         int levelToLoad = 1;
         if (SaveManager.Instance != null && SaveManager.Instance.saveData != null)
         {
@@ -36,6 +57,7 @@ public class MainMenu : MonoBehaviour
 
     public void OpenLevelSelectMenu()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiClickClip, false);
         if (levelSelectPanel != null)
         {
             UpdateLevelButtons();
@@ -45,6 +67,7 @@ public class MainMenu : MonoBehaviour
 
     public void CloseLevelSelectMenu()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiBackClip, false);
         if (levelSelectPanel != null)
         {
             levelSelectPanel.SetActive(false);
@@ -62,16 +85,19 @@ public class MainMenu : MonoBehaviour
 
     public void LoadLevel1()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiPlayClip, false);
         SceneManager.LoadScene(1);
     }
 
     public void LoadLevel2()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiPlayClip, false);
         SceneManager.LoadScene(2);
     }
 
     public void ResetProgress()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiClickClip, false);
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.saveData = new SaveData();

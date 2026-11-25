@@ -47,6 +47,7 @@ public class LevelManager : MonoBehaviour
 
     void LoadNextLevel()
     {
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.levelWinClip, false);
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
 

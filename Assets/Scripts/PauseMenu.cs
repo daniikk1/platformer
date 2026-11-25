@@ -27,6 +27,8 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
+        AudioManager.Instance?.SetPausedAudio(false);
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiBackClip, false);
     }
 
 
@@ -35,12 +37,16 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
+        AudioManager.Instance?.SetPausedAudio(true);
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiClickClip, false);
     }
 
 
     public void RestartLevel()
     {
         Time.timeScale = 1f;
+        AudioManager.Instance?.SetPausedAudio(false);
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiClickClip, false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -48,6 +54,8 @@ public class PauseMenu : MonoBehaviour
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
+        AudioManager.Instance?.SetPausedAudio(false);
+        AudioManager.Instance?.PlaySFX(AudioManager.Instance.uiBackClip, false);
         SceneManager.LoadScene("MainMenu");
     }
 }
